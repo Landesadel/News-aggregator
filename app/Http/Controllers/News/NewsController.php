@@ -13,15 +13,17 @@ class NewsController extends Controller
     use NewsTrait;
     use CategoryTrait;
 
-    public function index (): Factory|View|Application
+    public function index($category): Factory|View|Application
     {
         return \view('News.News', [
-            'newsCollection' => $this->getNews(),
+            'newsCollection' => $this->getNews($category),
         ]);
     }
 
-    public function show (int $id): array
+    public function show(int $id, string $category): Factory|View|Application
     {
-        return $this->getCategoryNews($id);
+        return \view('News.Article', [
+            'news' => $this->getArticle($id, $category)
+        ]);
     }
 }

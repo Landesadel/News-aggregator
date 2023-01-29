@@ -10,6 +10,6 @@ trait CategoryTrait
 
     public function getCategoryList(): array
     {
-        return $categoryCollection = ['Sport', 'It', 'Story', 'Cultural', 'Economic'];
+        return $categoryCollection = ['Technology', 'Science', 'Business', 'Culture', 'Health', 'Stories'];
     }
 }
