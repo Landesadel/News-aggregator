@@ -8,6 +8,9 @@ trait CategoryTrait
 {
     use NewsTrait;
 
+    /**
+     * @return array
+     */
     public function getCategoryList(): array
     {
         return $categoryCollection = ['Technology', 'Science', 'Business', 'Culture', 'Health', 'Stories'];
