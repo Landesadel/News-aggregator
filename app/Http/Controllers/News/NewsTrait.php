@@ -4,6 +4,10 @@ namespace App\Http\Controllers\News;
 
 trait NewsTrait {
 
+    /**
+     * @param string|null $category
+     * @return array
+     */
     public function getNews(string $category = null): array
     {
         $newsCollection = [];
@@ -23,6 +27,11 @@ trait NewsTrait {
         return $newsCollection;
     }
 
+    /**
+     * @param int $id
+     * @param string|null $category
+     * @return array
+     */
     public function getArticle(int $id, string $category = null): array
     {
         return [

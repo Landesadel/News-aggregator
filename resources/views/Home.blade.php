@@ -19,6 +19,8 @@
                 <nav class="nav d-flex justify-content-between">
                     <a class="btn btn-sm btn-outline-secondary" href='/about'>about</a>
                     <a class="btn btn-sm btn-outline-secondary" href='/category'>News categories</a>
+                    <a class="btn btn-sm btn-outline-secondary" href='{{ route('form.callback') }}'>Send callback
+                    <a class="btn btn-sm btn-outline-secondary" href='{{ route('form.upload') }}'>Upload</a>
                 </nav>
             </div>
             <div class="jumbotron p-3 p-md-5 text-white rounded bg-dark">
