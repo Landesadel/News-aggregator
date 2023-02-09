@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Form;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -17,11 +18,12 @@ class CallBackController extends Controller
     }
 
     /**
-     * @return RedirectResponse
+     * @return int|false
      */
-    public function saveInFile(): RedirectResponse
+    public function __invoke(Request $request): bool|int
     {
-        file_put_contents('public/dataFiles/callback.php', request()->all(), FILE_APPEND);
-        return redirect()->route('form.callback');
+        $status = file_put_contents(public_path('callback.json'), json_encode($request->all()));
+        redirect()->route('form.callback');
+        return $status;
     }
 }
