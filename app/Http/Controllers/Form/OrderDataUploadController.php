@@ -19,11 +19,12 @@ class OrderDataUploadController extends Controller
     }
 
     /**
-     * @return RedirectResponse
+     * @return int|false
      */
-    public function saveInFile(): RedirectResponse
+    public function __invoke(Request $request): bool|int
     {
-        file_put_contents('public/dataFiles/upload.php', request()->all(), FILE_APPEND);
-        return redirect()->route('form.upload');
+        $status = file_put_contents(public_path('data.json'), json_encode($request->all()));
+        redirect()->route('form.upload');
+        return $status;
     }
 }

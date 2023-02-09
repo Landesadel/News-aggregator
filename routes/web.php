@@ -22,9 +22,9 @@ Route::get('/category', [CategoryController::class, 'index']);
 Route::get('/signin', [SigningController::class, 'index']);
 
 Route::group(['prefix' => 'form', 'as' => 'form.'], static function() {
-    Route::get('/upload', [OrderDataUploadController::class, 'index'])
+    Route::post('/upload', OrderDataUploadController::class)
         ->name('upload');
-    Route::get('/callback', [CallBackController::class, 'index'])
+    Route::post('/callback', CallBackController::class)
         ->name('callback');
 });
 
@@ -38,7 +38,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], static function() {
 });
 
 //News routes
-Route::get('/{category}/news', [NewsController::class, 'index'])
+Route::get('/category/news', [NewsController::class, 'index'])
     ->name('news');
 Route::get('/news/{id}/{category}', [NewsController::class, 'show'])
     ->where('id', '\d+')
