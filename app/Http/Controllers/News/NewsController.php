@@ -5,6 +5,7 @@ namespace App\Http\Controllers\News;
 use App\Http\Controllers\Category\CategoryTrait;
 use App\Http\Controllers\Controller;
 use App\Models\News;
+use App\QueryBuilders\QueryBuilder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,7 +18,7 @@ class NewsController extends Controller
      * @param $category
      * @return View
      */
-    public function index($category): View
+    public function index(QueryBuilder $builder): View
     {
         $newsModel = new News;
         return \view('News.News', [

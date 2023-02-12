@@ -12,6 +12,7 @@ use App\Http\Controllers\SigningController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\SourceController as AdminSourceController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -35,6 +36,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], static function() {
         ->name('index');
     Route::resource('categories', AdminCategoryController::class);
     Route::resource('news', AdminNewsController::class);
+    Route::resource('source', AdminSourceController::class);
 });
 
 //News routes
