@@ -20,11 +20,11 @@
             @method('put')
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" id="title" name="title" value="{{ $category->title }}" class="form-control">
+                <input type="text" id="title" name="title" value="{{ $category->title }}" class="form-control @error('title') is-invalid @enderror">
             </div>
             <div class="form-group">
                 <label for="sources">Sources</label>
-                <select id="sources" name="sources[]" class="form-control" multiple>
+                <select id="sources" name="sources[]" class="form-control @error('sources') is-invalid @enderror" multiple>
                     <option value="0">->Select<-</option>
                     @foreach($sources as $source)
                         <option @if(in_array($source->id, $category->sources->pluck('id')->toArray())) selected @endif value="{{ $source->id }}">{{ $source->name }}</option>
@@ -33,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <input type="text" id="description" name="description" value="{{ $category->description }}" class="form-control">
+                <input type="text" id="description" name="description" value="{{ $category->description }}" class="form-control @error('description') is-invalid @enderror">
             </div>
             <button type="submit" class="btn btn-sm btn-outline-secondary">Edit+</button>
         </form>

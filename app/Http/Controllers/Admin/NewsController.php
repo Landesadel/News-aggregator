@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\NewsStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\News\CreateRequest;
+use App\Http\Requests\News\EditRequest;
 use App\Models\News;
 use App\QueryBuilders\CategoriesQueryBuilder;
 use App\QueryBuilders\NewsQueryBuilder;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
@@ -43,25 +45,24 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param CreateRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-            'author' => 'required',
-        ]);
+        $news = News::create($request->validated());
 
-        $news = new News($request->except('_token', 'category_id'));
-
-        if ($news->save()) {
+        if ($news) {
+            $news->categories()->attach($request->getCategoriesId());
             return redirect()->route('admin.news.index')->with('success', 'News added');
         }
 
         return \back()->with('error', 'Something wrong... Try again later');
     }
 
+    /**
+     * @param $id
+     */
     public function show($id)
     {
         //
@@ -82,24 +83,36 @@ class NewsController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param News    $news
+     * @param EditRequest $request
+     * @param News        $news
      * @return RedirectResponse
      */
-    public function update(Request $request, News $news): RedirectResponse
+    public function update(EditRequest $request, News $news): RedirectResponse
     {
-        $news = $news->fill($request->except('_token', 'Categories'));
+        $news = $news->fill($request->validated());
 
-        if ($news->save()) {
-            $news->categories()->sync($request->input('Categories'));
+        if ($news) {
+            $news->categories()->sync($request->getCategoriesId());
             return redirect()->route('admin.news.index')->with('success', 'News changed');
         }
 
         return \back()->with('error', 'Something wrong... try again');
     }
 
-    public function destroy($id)
+    /**
+     * @param News $news
+     * @return JsonResponse
+     */
+    public function destroy(News $news): JsonResponse
     {
-        //
+        try{
+            $news->delete();
+
+            return \response()->json('ok');
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+
+            return \response()->json('error', 400);
+        }
     }
 }
