@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Sources\CreateRequest;
+use App\Http\Requests\Sources\EditRequest;
 use App\Models\Source;
 use App\QueryBuilders\CategoriesQueryBuilder;
 use App\QueryBuilders\SourceQueryBuilder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
@@ -41,20 +44,15 @@ class SourceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param CreateRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-            'category' => 'selected',
-            'url' => 'required|url',
-        ]);
+        $source = Source::create($request->validated());
 
-        $source = new Source($request->except('_token'));
-
-        if ($source->save()) {
+        if ($source) {
+            $source->categories()->attach($request->getCategoriesId());
             return redirect()->route('admin.source.index')->with('success', 'New source added');
         }
 
@@ -89,16 +87,16 @@ class SourceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param Source  $source
+     * @param EditRequest $request
+     * @param Source      $source
      * @return RedirectResponse
      */
-    public function update(Request $request, Source $source): RedirectResponse
+    public function update(EditRequest $request, Source $source): RedirectResponse
     {
-        $source = $source->fill($request->except('_token'));
+        $source = $source->fill($request->validated());
 
         if ($source->save()) {
-            $source->categories()->sync($request->input('Categories'));
+            $source->categories()->sync($request->getCategoriesId());
             return redirect()->route('admin.source.index')->with('success', 'Source changed');
         }
 
@@ -111,8 +109,16 @@ class SourceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Source $source): JsonResponse
     {
-        //
+        try{
+            $source->delete();
+
+            return \response()->json('ok');
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+
+            return \response()->json('error', 400);
+        }
     }
 }

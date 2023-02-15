@@ -20,20 +20,20 @@
             @method('put')
             <div class="form-group">
                 <label for="Categories">Category</label>
-                <select id="Categories" name="Categories[]" class="form-control" multiple>
+                <select id="Categories" name="Categories[]" class="form-control @error('Categories') is-invalid @enderror" multiple>
                     <option value="0">->Select<-</option>
                     @foreach($categories as $category)
-                        <option @if(in_array($category->id, $source->categories->pluck('id')->toArray())) selected @endif value="{{ $category->id }}">{{ $category->title }}</option>
+                        <option @if(in_array($category->id,   $source->categories->pluck('id')->toArray())) selected @endif value="{{ $category->id }}">{{ $category->title }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" value="{{ $source->name }}" class="form-control">
+                <input type="text" id="name" name="name" value="{{ $source->name }}" class="form-control @error('name') is-invalid @enderror">
             </div>
             <div class="form-group">
                 <label for="url">Url</label>
-                <input type="url" id="url" name="url" value="{{ $source->url }}" class="form-control">
+                <input type="url" id="url" name="url" value="{{ $source->url }}" class="form-control @error('url') is-invalid @enderror">
             </div>
             <button type="submit" class="btn btn-sm btn-outline-secondary">Edit+</button>
         </form>

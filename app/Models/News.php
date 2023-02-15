@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -25,6 +26,14 @@ class News extends Model
         'Categories_id' => 'array',
     ];
 
+    protected function author(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => ucwords($value),
+        );
+
+    }
+
     /**
      * @return BelongsToMany
      */
@@ -34,7 +43,9 @@ class News extends Model
             Category::class,
             'category_has_news',
             'news_id',
-            'category_id'
+            'category_id',
+            'id',
+            'id',
         );
     }
 

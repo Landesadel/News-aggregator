@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Categories\CreateRequest;
+use App\Http\Requests\Categories\EditRequest;
 use App\Models\Category;
+use App\Models\News;
 use App\QueryBuilders\CategoriesQueryBuilder;
 use App\QueryBuilders\SourceQueryBuilder;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -23,8 +27,10 @@ class CategoryController extends Controller
         ]);
     }
 
+
     /**
-     *
+     * @param SourceQueryBuilder $sourceBuilder
+     * @return View
      */
     public function create(SourceQueryBuilder $sourceBuilder): view
     {
@@ -34,17 +40,15 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param CreateRequest $request
+     * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'title' => 'required',
-        ]);
+        $category = Category::create($request->validated());
 
-        $category = new Category($request->except('_token'));
-
-        if ($category->save()) {
+        if ($category) {
+            $category->sources()->attach($request->getSourcesId());
             return redirect()->route('admin.categories.index')->with('success', 'New Category added');
         }
 
@@ -73,16 +77,16 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param Request  $request
-     * @param Category $category
+     * @param EditRequest $request
+     * @param Category    $category
      * @return RedirectResponse
      */
-    public function update(Request $request, Category $category): RedirectResponse
+    public function update(EditRequest $request, Category $category): RedirectResponse
     {
-        $category = $category->fill($request->except('_token', 'sources'));
+        $category = $category->fill($request->validated());
 
-        if ($category->save()) {
-            $category->sources()->sync($request->input('sources'));
+        if ($category) {
+            $category->sources()->sync($request->getSourcesId());
             return redirect()->route('admin.categories.index')->with('success', 'Category changed');
         }
 
@@ -90,10 +94,19 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param $id
+     * @param News $news
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Category $category): JsonResponse
     {
-        //
+        try{
+            $category->delete();
+
+            return \response()->json('ok');
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+
+            return \response()->json('error', 400);
+        }
     }
 }
