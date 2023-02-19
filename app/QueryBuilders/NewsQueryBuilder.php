@@ -33,7 +33,7 @@ final class NewsQueryBuilder extends QueryBuilder
     }
 
     /**
-     * @return $this
+     * @return Collection
      */
     function getCollection(): Collection
     {

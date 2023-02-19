@@ -24,7 +24,7 @@ class CreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Categories_id' => 'array|required',
+            'Categories_id' => 'array',
             'Categories_id.*' => 'exists:categories,id',
             'name' => 'required|string',
             'url' => 'required|url',
