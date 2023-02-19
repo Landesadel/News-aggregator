@@ -20,13 +20,14 @@
                 <th>Email</th>
                 <th>Email verified at</th>
                 <th>created at</th>
+                <th>actions</th>
             </tr>
             </thead>
             <tbody>
             @forelse($usersList as $user)
                 <tr>
                     <td>{{ $user->id }}</td>
-                    <td>{{ $user->is_admin }}</td>
+                    <td> @if ($user->is_admin === true) admin @else user @endif</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->email_verified_at }}</td>

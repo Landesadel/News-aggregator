@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Users\CreateRequest;
+use App\Http\Requests\Users\EditRequest;
+use App\Models\User;
 use App\QueryBuilders\UsersQueryBuilder;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -25,11 +30,11 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
-        //
+        return \view('admin.users.create');
     }
 
     /**
@@ -38,16 +43,24 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request): RedirectResponse
     {
-        //
+        $user = User::create($request->validated());
+
+        if ($user) {
+            $request->user()->fill([
+                'password' => Hash::make($request->validated('password')),
+            ]);
+            return redirect()->route('admin.users.index')->with('success', 'User added');
+        }
+
+        return \back()->with('error', 'Something wrong... Try again later');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
      */
     public function show($id)
     {
@@ -57,34 +70,50 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  User  $user
+     * @return View
      */
-    public function edit($id)
+    public function edit(User $user): View
     {
-        //
+        return \view('admin.users.edit', ['user' => $user]);
     }
 
+
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  EditRequest  $request
+     * @param  User         $user
+     * @return RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(EditRequest $request, User $user): RedirectResponse
     {
-        //
+        $user = $user->fill($request->validated());
+
+        if ($user) {
+            $request->user()->fill([
+                'password' => Hash::make($request->validated('password')),
+            ]);
+            return redirect()->route('admin.users.index')->with('success', 'User changed');
+        }
+
+        return \back()->with('error', 'Something wrong... try again');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  User  $user
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(User $user): JsonResponse
     {
-        //
+        try{
+            $user->delete();
+
+            return \response()->json('ok');
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+
+            return \response()->json('error', 400);
+        }
     }
 }
