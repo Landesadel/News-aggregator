@@ -56,7 +56,7 @@
                 elem.addEventListener("click", function() {
                     const id = this.getAttribute('rel');
                     if(confirm(`Confirm delete user with #id = ${id}`)) {
-                        send(`/admin/news/${id}`).then(() => {
+                        send(`/admin/users/${id}`).then(() => {
                             location.reload();
                         });
                     }

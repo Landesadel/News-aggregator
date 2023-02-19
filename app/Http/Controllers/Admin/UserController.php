@@ -48,9 +48,10 @@ class UserController extends Controller
         $user = User::create($request->validated());
 
         if ($user) {
-            $request->user()->fill([
-                'password' => Hash::make($request->validated('password')),
-            ]);
+            $user->fill([
+                $request->validated(),
+                'password' => Hash::make($request->getPassword()),
+            ])->save();
             return redirect()->route('admin.users.index')->with('success', 'User added');
         }
 
@@ -88,10 +89,15 @@ class UserController extends Controller
     {
         $user = $user->fill($request->validated());
 
+
         if ($user) {
-            $request->user()->fill([
-                'password' => Hash::make($request->validated('password')),
-            ]);
+            if (Hash::needsRehash($request->getPassword())) {
+                $user->fill([
+                    $request->validated(),
+                    'password' => Hash::make($request->getPassword()),
+                ])->save();
+            }
+
             return redirect()->route('admin.users.index')->with('success', 'User changed');
         }
 

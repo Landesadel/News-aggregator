@@ -27,16 +27,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>
@@ -51,9 +41,13 @@ class User extends Authenticatable
      */
     public function getUsers(): Collection
     {
-        return \DB::table('users')->select(['id', 'is_admin', 'name', 'email', 'email_verified_at', 'created_at' ])->get();
+        return \DB::table('users')->select(['id', 'is_admin', 'name', 'email', 'password', 'email_verified_at', 'created_at' ])->get();
     }
 
+    /**
+     * @param  int  $id
+     * @return mixed
+     */
     public function getUserById(int $id): mixed
     {
         return \DB::table('users')->find($id);

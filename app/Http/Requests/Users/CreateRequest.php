@@ -29,4 +29,12 @@ class CreateRequest extends FormRequest
             'password' => 'required|string|min:6',
         ];
     }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->validated('password');
+    }
 }
