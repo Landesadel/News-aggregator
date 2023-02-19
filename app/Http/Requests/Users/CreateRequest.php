@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Sources;
+namespace App\Http\Requests\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,15 +24,17 @@ class CreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'Categories_id' => 'array',
-            'Categories_id.*' => 'exists:categories,id',
             'name' => 'required|string',
-            'url' => 'required|url',
+            'email' => 'required|email|unique:users|string',
+            'password' => 'required|string|min:6',
         ];
     }
 
-    public function getCategoriesId(): array
+    /**
+     * @return string
+     */
+    public function getPassword(): string
     {
-        return (array) $this->validated('Categories_id');
+        return $this->validated('password');
     }
 }

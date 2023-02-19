@@ -24,7 +24,7 @@ class NewsController extends Controller
     public function index(NewsQueryBuilder $newsBuilder): View
     {
         return \view('admin.news.index', [
-            'newsList' => $newsBuilder->getNewsWithPagination() ,
+            'newsList' => $newsBuilder->getNewsWithPagination(),
         ]);
     }
 
