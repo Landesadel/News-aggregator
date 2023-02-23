@@ -8,6 +8,9 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
+                    <a href="{{ route('social.auth.redirect', ['driver' => 'vkontakte']) }}"><strong>login VK</strong></a>
+                    <br>
+                    <a href="{{ route('social.auth.redirect', ['driver' => 'github']) }}"><strong>login GitHub</strong></a>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
