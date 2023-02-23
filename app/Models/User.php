@@ -36,6 +36,10 @@ class User extends Authenticatable
         'is_admin' => 'boolean',
     ];
 
+    protected $dates = [
+        'last_login_at',
+    ];
+
     /**
      * @return Collection
      */
