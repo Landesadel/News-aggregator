@@ -9,6 +9,7 @@ use App\Http\Requests\News\EditRequest;
 use App\Models\News;
 use App\QueryBuilders\CategoriesQueryBuilder;
 use App\QueryBuilders\NewsQueryBuilder;
+use App\Services\UploadService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -87,9 +88,13 @@ class NewsController extends Controller
      * @param News        $news
      * @return RedirectResponse
      */
-    public function update(EditRequest $request, News $news): RedirectResponse
+    public function update(EditRequest $request, News $news, UploadService $uploadService): RedirectResponse
     {
         $news = $news->fill($request->validated());
+
+        if ($request->hasFile('image')) {
+            $news['image'] = $uploadService->uploadImage($request->file('image'));
+        }
 
         if ($news) {
             $news->categories()->sync($request->getCategoriesId());

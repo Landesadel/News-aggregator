@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\News;
 use App\QueryBuilders\QueryBuilder;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Model;
 
 class NewsController extends Controller
 {
@@ -15,27 +14,25 @@ class NewsController extends Controller
     use CategoryTrait;
 
     /**
-     * @param $category
+     * @param  QueryBuilder  $builder
      * @return View
      */
     public function index(QueryBuilder $builder): View
     {
-        $newsModel = new News;
-        return \view('News.News', [
-            'newsCollection' => $newsModel->getNews(),
+        $newsModel = News::query()->paginate(10);
+        return \view('News.index', [
+            'newsCollection' => $newsModel,
         ]);
     }
 
     /**
-     * @param int $id
-     * @param string|null $category
+     * @param News $news
      * @return View
      */
-    public function show(int $id, string $category = null): View
+    public function show(News $news): View
     {
-        $newsModel = new News;
         return \view('News.Article', [
-            'news' => $newsModel->getNewsById($id)
+            'news' => $news,
         ]);
     }
 }

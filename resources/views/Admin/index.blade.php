@@ -10,9 +10,10 @@
         </div>
     </div>
     <div class="table-responsive">
-        <x-alert type="info" message="it's a info message"></x-alert>
-        <x-alert type="danger" message="it's a danger message"></x-alert>
-        <x-alert type="warning" message="it's a warning message"></x-alert>
-        <x-alert type="success" message="it's a success message"></x-alert>
+{{--        <x-alert type="info" message="it's a info message"></x-alert>--}}
+{{--        <x-alert type="danger" message="it's a danger message"></x-alert>--}}
+{{--        <x-alert type="warning" message="it's a warning message"></x-alert>--}}
+{{--        <x-alert type="success" message="it's a success message"></x-alert>--}}
+        <a href="{{ route('admin.parser') }}">Parsing news</a>
     </div>
 @endsection
