@@ -4,7 +4,9 @@
 namespace App\Services;
 
 
+use App\Models\News;
 use App\Services\Contracts\Parser;
+use Orchestra\Parser\Xml\Facade as XmlParser;
 
 class ParserService implements Parser
 {
@@ -21,13 +23,13 @@ class ParserService implements Parser
     }
 
     /**
-     * @return array
+     * @return void
      */
-    public function getParseData(): array
+    public function saveParseData(): void
     {
         $xml = XMLParser::load($this->link);
 
-        return $xml->parse([
+        $data = $xml->parse([
             'title' => [
                 'users' => 'channel.title',
             ],
@@ -41,8 +43,17 @@ class ParserService implements Parser
                 'users' => 'channel.image.url',
             ],
             'news' => [
-                'users' => 'channel.item[title, link, guid, description, pubDate]'
+                'users' => 'channel.item[title, link, author, description, pubDate]'
             ],
         ]);
+
+        foreach ($data["news"] as $news) {
+            News::create([
+                'title' => $news['title'],
+                'link' => $news['link'],
+                'description' => $news['description'],
+                'author' => $news['author'],
+            ]);
+        }
     }
 }

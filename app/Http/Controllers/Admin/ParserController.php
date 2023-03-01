@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\JobNewsParsing;
+use App\QueryBuilders\SourceQueryBuilder;
 use App\Services\Contracts\Parser;
 use Illuminate\Http\Request;
-use Orchestra\Parser\Xml\Facade as XmlParser;
 
 class ParserController extends Controller
 {
@@ -16,9 +17,13 @@ class ParserController extends Controller
      * @param Parser  $parser
      * @return Parser
      */
-    public function __invoke(Request $request, Parser $parser): Parser
+    public function __invoke(SourceQueryBuilder $sourceQueryBuilder, Request $request): string
     {
-        $load = $parser->setLink('https://news.yandex.ru/music.rss');
-        return $load;
+        $urls = $sourceQueryBuilder->getCollection()->pluck('url');
+        foreach ($urls as $url) {
+            \dispatch(new JobNewsParsing($url));
+        }
+
+        return 'Parsing completed';
     }
 }

@@ -18,7 +18,6 @@ use App\Http\Controllers\News\NewsController;
 use App\Http\Controllers\SigningController;
 use App\Http\Controllers\SocialProvidersController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -55,7 +54,7 @@ Route::group(['middleware' => 'auth'], static function () {
 //News routes
 Route::get('/category/news', [NewsController::class, 'index'])
     ->name('news');
-Route::get('/news/{id}/{category}', [NewsController::class, 'show'])
+Route::get('/news/{category}/{id}', [NewsController::class, 'show'])
     ->where('id', '\d+')
     ->name('article');
 Route::get('/add', [AddNewsController::class, 'index']);

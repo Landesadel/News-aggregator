@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SourceSeeder extends Seeder
@@ -20,12 +19,14 @@ class SourceSeeder extends Seeder
     public function getSourceData(): array
     {
         $sourceData = [];
+
         $sourceCollection = [
-            ['Yandex', 'https://dzen.ru/'],
-            ['Youtube', 'https://www.youtube.com/'],
-            ['Vk', 'https://vk.ru/'],
-            ['google', 'https://www.google.com/'],
-            ['Habr', 'https://habr.com/'],
+            ['moscow', 'https://news.rambler.ru/rss/moscow_city'],
+            ['technology', 'https://news.rambler.ru/rss/technology'],
+            ['starlife', 'https://news.rambler.ru/rss/starlife/'],
+            ['politics', 'https://news.rambler.ru/rss/politics'],
+            ['world', 'https://news.rambler.ru/rss/world'],
+            ['tech', 'https://news.rambler.ru/rss/tech'],
         ];
 
         for ($i = 0; $i < 10; $i++) {
@@ -34,6 +35,7 @@ class SourceSeeder extends Seeder
             $sourceData[] = [
                 'name' => $sourceCollection[$index][0],
                 'url' => $sourceCollection[$index][1],
+                'category' => 'news',
                 'created_at' => \now(),
                 'updated_at' => \now(),
             ];

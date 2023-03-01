@@ -23,11 +23,6 @@ class SourceQueryBuilder extends QueryBuilder
         return $this->model->with('Categories')->paginate($quantity);
     }
 
-    public function getSourceById(int $id): Collection
-    {
-        return Source::query()->where('id', $id)->get();
-    }
-
     /**
      * @return Collection
      */

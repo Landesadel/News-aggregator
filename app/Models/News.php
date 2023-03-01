@@ -20,6 +20,7 @@ class News extends Model
         'status',
         'image',
         'description',
+        'link',
     ];
 
     protected $casts = [
